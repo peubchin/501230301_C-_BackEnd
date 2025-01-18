@@ -6672,3 +6672,7 @@ body {
 }
 
 /*# sourceMappingURL=ready.css.map */
+
+.hide {
+  display: none;
+}
