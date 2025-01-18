@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 
 export async function listCategory(req, res) {
   try {
-    const categories = await categoryModel.find();
+    const categories = await categoryModel.find({deletedAt: null});
     res.render('pages/categories/list',
       {
         title: "categories",
@@ -41,7 +41,7 @@ export async function UpdateCategory(req, res) {
   const { code, name, image, id } = req.body
   try {
     await categoryModel.updateOne({
-      _id: new ObjectId(id)
+      _id: new ObjectId(id),
     }, {
       code,
       name,
@@ -56,15 +56,54 @@ export async function UpdateCategory(req, res) {
 }
 
 export async function RenderPageUpdateCategory(req, res) {
-  const { id } = req.params
-  const category = await categoryModel.findOne({_id: id})
-  if (category) {
-    res.render("pages/categories/form", {
-      title: "Update Categories",
-      mode: 'Update',
-      category,
-    })
-  } else {
-    res.send('Hiện ko có sản phẩm nào phù hợp')
+  try {
+    const { id } = req.params
+    const category = await categoryModel.findOne({_id: id, deletedAt: null})
+    if (category) {
+      res.render("pages/categories/form", {
+        title: "Update Categories",
+        mode: 'Update',
+        category,
+      })
+    } else {
+      res.send('Hiện ko có sản phẩm nào phù hợp')
+    } 
+  } catch (error) {
+    console.error(error);
+    res.send('Trang web ko tồn tại')
+  }
+}
+
+export async function DeleteCategory(req, res) {
+  const { code, name, image, id } = req.body
+  try {
+    await categoryModel.updateOne({
+      _id: new ObjectId(id)
+    }, {
+      deletedAt: new Date()
+    });
+    res.redirect('/categories')
+  } catch (error) {
+    console.log(error);
+    res.send("Sửa loại sp khong thanh cong");
+  }
+}
+
+export async function RenderPageDeleteCategory(req, res) {
+  try {
+    const { id } = req.params
+    const category = await categoryModel.findOne({_id: id, deletedAt: null})
+    if (category) {
+      res.render("pages/categories/form", {
+        title: "Delete Categories",
+        mode: 'Delete',
+        category,
+      })
+    } else {
+      res.send('Hiện ko có sản phẩm nào phù hợp')
+    }
+  } catch (error) {
+    console.error(error);
+    res.send('Trang web ko tồn tại')
   }
 }
