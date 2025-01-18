@@ -9,6 +9,5 @@ export default function mongoConnect(){
   }catch(error){
     console.log(error);
     console.log("connect failed");
-  }
-
+  } 
 }
