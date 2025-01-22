@@ -102,3 +102,6 @@
 .category-label{
 	width: 4rem;
 }
+.hide{
+	display: none;
+}
