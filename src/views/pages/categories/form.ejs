@@ -20,4 +20,10 @@
 </body>
 <%- include('../../layouts/script/main'); %>
 <%- include('../../layouts/script/component'); %>
+<script>
+	const mode='<%=mode%>'
+	if(mode==="Delete"){
+		$(".categoryInput").attr("disable","disable");
+	}
+</script>
 </html>

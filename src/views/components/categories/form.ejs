@@ -4,12 +4,12 @@
       <% if(mode==="Create" ){ %>
         Tạo sản phẩm mới
         <% }%>
-          <% if(mode==="Update" ){ %>
-            Cập nhật sản phẩm
-            <% }%>
-              <% if(mode==="Delete" ){ %>
-                Bạn có đồng ý xóa sản phẩm <%=category?.name%>
-                  <% }%>
+      <% if(mode==="Update" ){ %>
+        Cập nhật sản phẩm
+        <% }%>
+      <% if(mode==="Delete" ){ %>
+        Bạn có đồng ý xóa sản phẩm <%=category?.name%>
+        <% }%>
     </h4>
     <div class="card">
       <div class="card-body">
@@ -27,35 +27,41 @@
                  </div>
           <div class="form-group">
               <label for="code">Mã loại sản phẩm</label>
-              <input name="code" type="text" value="<%= category?.code %>" class="form-control" id="code"
-               placeholder="Nhập mã sản phẩm" disabled="<%= mode==='Delete' ? true : false %>" />
+              <input name="code" type="text" value="<%= category?.code %>" class="form-control categoryInput" id="code"
+               placeholder="Nhập mã sản phẩm"/>
             </div>
 
           <div class="form-group">
             <label for="name">Tên loại sản phẩm</label>
-            <input name="name" type="text" class="form-control" id="name" value="<%= category?.name %>"
-              placeholder="Nhập tên sản phẩm" disabled="<%= mode==='Delete' ? true : false %>" />
+            <input name="name" type="text" class="form-control categoryInput" id="name" value="<%= category?.name %>"
+              placeholder="Nhập tên sản phẩm"/>
               </div>
+
+          <div class="form-group">
+            <label for="searchString">Chuỗi tìm kiếm</label>
+            <input name="searchString" type="text" class="form-control categoryInput" id="searchString" value="<%= category?.searchString %>"
+              placeholder="Nhập chuỗi tìm kiếm"/>
+              </div>
+
           <div class="form-group">
             <label for="image">Link hình ảnh</label>
-             <input name="image" type="text" class="form-control" id="image"
-                value="<%= category?.image %>" placeholder="Nhập tên hình ảnh"
-                disabled="<%= mode==='Delete' ? true:false %>" />
+             <input name="image" type="text" class="form-control categoryInput" id="image"
+                value="<%= category?.image %>" placeholder="Nhập tên hình ảnh" />
                 </div>
 
           <div class="card-action">
-                            <% if(mode==="Create" ){ %>
-                              <button class="btn btn-success" type="submit">Tạo</button>
-                              <% }%>
-                                <% if(mode==="Update" ){ %>
-                                  <button class="btn btn-success" type="submit" href="/categories">Cập nhật</button>
-                                  <% }%>
-                                <% if(mode==="Delete" ){ %>
-                                  <button class="btn btn-danger" type="submit" href="/categories">Xóa</button>
-                                  <% }%>
-                                    <a class="btn btn-primary" href="/categories">Trở về danh sách sản phẩm</a>
-                          </div>
-                      </form>
+            <% if(mode==="Create" ){ %>
+              <button class="btn btn-success" type="submit">Tạo</button>
+            <% }%>
+            <% if(mode==="Update" ){ %>
+              <button class="btn btn-success" type="submit" href="/categories">Cập nhật</button>
+            <% }%>
+            <% if(mode==="Delete" ){ %>
+              <button class="btn btn-danger" type="submit" href="/categories">Xóa</button>
+            <% }%>
+            <a class="btn btn-primary" href="/categories">Trở về danh sách sản phẩm</a>
+              </div>
+            </form>
       </div>
     </div>
   </div>

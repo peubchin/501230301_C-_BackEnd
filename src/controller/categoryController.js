@@ -1,25 +1,45 @@
 import categoryModel from "../models/categoryModel.js";
 import { ObjectId } from "mongodb";
+import { removeVietNamAccents } from "../common/index.js";
 
 export async function listCategory(req, res) {
+  const search=req.query?.search
+  const pageSize= !!req.query.pageSize ? parseInt(req.query.pageSize):5
+  const page= !!req.query.page ? parseInt(req.query.page):1
+  const skip=(page - 1)*pageSize
+  console.log({pageSize, skip });
+  
+  let filters={
+    deleteAt : null
+  }
+  if(search &&search.length > 0){
+    filters.searchString={$regex:removeVietNamAccents(search),$options:"i"}//0 phan biet hoa thuong
+  }
   try {
-    const categories = await categoryModel.find({ deleteAt : null });
+    const countCategories = await categoryModel.countDocuments(filters)
+    const categories = await categoryModel.find(filters).skip(skip).limit(pageSize)
+    console.log({page});
+    
+    // res.json(categories)
     res.render('pages/categories/list',
       {
         title: "categories",
-        categories: categories
+        categories: categories,
+        countPagination: Math.ceil(countCategories/pageSize),
+        pageSize,
+        page,
       })
   } catch (error) {
     console.log(error);
-    res.send("Hien khong co san pham nao");
+    res.send("Hien khong co san pham nao !");
   }
 }
 
 export async function createCategory(req, res) {
-  const { code, name, image } = req.body
+  const data= req.body
   try {
     await categoryModel.create({
-      code, name, image, createdAt: new Date()
+      ...data, createdAt: new Date()
     });
     // res.send("Tạo loại sản phẩm thành công")
     res.redirect('/categories')
@@ -39,14 +59,12 @@ export async function RenderPageCreateCategory(req, res) {
 
 export async function UpdateCategory(req, res) {
   // const {id} = req.params;
-  const { id, code, name, image } = req.body
+  const { id,...data } = req.body
   try {
     await categoryModel.updateOne({
       _id: new ObjectId(id) }
       ,{
-      code,
-      name,
-      image,
+      ...data,
       updatedAt: new Date()
     });
     res.redirect('/categories')
