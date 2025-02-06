@@ -16,7 +16,7 @@ router.get('/create',RenderPageCreateCategory)//render ra trang
 router.post('/create',createCategory)
 
 router.get('/update/:id',RenderPageUpdateCategory)//render ra trang update
-router.post('/update',UpdateCategory)
+router.post('/update/:id',UpdateCategory)
 
 router.get('/delete/:id',RenderPageDeleteCategory)//render ra trang delete
 router.post('/delete',DeleteCategory)

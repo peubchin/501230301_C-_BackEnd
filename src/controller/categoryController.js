@@ -15,11 +15,12 @@ export async function listCategory(req, res) {
   const page= !!req.query.page ? parseInt(req.query.page):1
   const skip=(page - 1)*pageSize
   const sort= !!req.query.sort ? req.query.sort: null
-  const sortOrder={}
+  let sortOrder={}
   if(sort){
-
     const [col,ord]=sort.split('_');
     sortOrder[col]=ord
+  }else{
+    sortOrder={createAt:-1}
   }
   let filters={
     deleteAt : null
@@ -27,6 +28,7 @@ export async function listCategory(req, res) {
   if(search &&search.length > 0){
     filters.searchString={$regex:removeVietNamAccents(search),$options:"i"}//0 phan biet hoa thuong
   }
+
   try {
     const countCategories = await categoryModel.countDocuments(filters)
     const categories = await categoryModel.find(filters).sort(sortOrder).skip(skip).limit(pageSize);
@@ -49,13 +51,33 @@ export async function listCategory(req, res) {
 export async function createCategory(req, res) {
   const data= req.body
   try {
+    const category =await categoryModel.findOne({code:data.code,deleteAt:null})
+    if(category){
+      throw("code")
+    }
     await categoryModel.create({
       ...data, createdAt: new Date()
     });
     res.redirect('/categories')
   } catch (error) {
-    console.log(error);
-    res.send("Tao sp  khong thanh cong");
+    console.log("error",error);
+    let err={}
+    if(error==="code"){
+      err.code="Ma san pham da ton tai"
+    }
+    if(error.name==="ValidationError"){
+      Object.keys(error.errors).forEach(key=>{
+        err[key]=error.errors[key].message
+      })
+    }
+    console.log("err ", err);
+    
+    res.render("pages/categories/form", {
+      title: "Create Categories",
+      mode: "Create",
+      category: {...data},
+      err
+    })
   }
 }
 
@@ -63,14 +85,19 @@ export async function RenderPageCreateCategory(req, res) {
   res.render("pages/categories/form", {
     title: "Create Categories",
     mode: "Create",
-    category: {}
+    category: {},
+    err:{}
   })
 }
 
 export async function UpdateCategory(req, res) {
-  // const {id} = req.params;
-  const { id,...data } = req.body
+  const {id} = req.params;
+  const {...data} = req.body
   try {
+    const category =await categoryModel.findOne({code:data.code,deleteAt:null})
+    if(category){
+      throw("code")
+    }
     await categoryModel.updateOne({
       _id: new ObjectId(id) }
       ,{
@@ -80,20 +107,36 @@ export async function UpdateCategory(req, res) {
     res.redirect('/categories')
   } catch (error) {
     console.log(error);
-    res.send("Sửa loại sp  khong thanh cong");
-  }
+    let err={}
+    if(error==="code"){
+      err.code="Ma san pham da ton tai"
+    }
+    if(error.name==="ValidationError"){
+      Object.keys(error.errors).forEach(key=>{
+        err[key]=error.errors[key].message
+      })
+    }
+    console.log("err ", err);
+    
+    res.render("pages/categories/form", {
+      title: "Update Categories",
+      mode: "Update",
+      category: {...data, _id:id},
+      err
+    })  }
 }
 
 export async function RenderPageUpdateCategory(req, res) {
   const {id}=req.params;
   try {
-    const category=await categoryModel.findOne({_id: new ObjectId(id),deleteAt:null});
+    const category=await categoryModel.findOne({_id:id,deleteAt:null});
     if(category){
   
       res.render("pages/categories/form", {
         title: "Update Categories",
         mode: "Update",
-        category:category
+        category:category,
+        err:{}
       })
     }else{
       res.send("Hiện không có sản phẩm nào phù hợp!");
@@ -128,7 +171,8 @@ export async function RenderPageDeleteCategory(req, res) {
     res.render("pages/categories/form", {
       title: "Delete Categories",
       mode: "Delete",
-      category:category
+      category:category,
+      err:{}
     })
   }else{
     res.send("Hiện không có sản phẩm nào phù hợp!");
