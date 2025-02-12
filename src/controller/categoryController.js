@@ -94,7 +94,7 @@ export async function UpdateCategory(req, res) {
   const {id} = req.params;
   const {...data} = req.body
   try {
-    const category =await categoryModel.findOne({code:data.code,deleteAt:null})
+    const category =await categoryModel.findOne({_id:{$ne: new ObjectId(id)},code:data.code,deleteAt:null})
     if(category){
       throw("code")
     }
@@ -145,7 +145,6 @@ export async function RenderPageUpdateCategory(req, res) {
     console.log(error);
     res.send("Trang web này không tồn tại");
   }
-
 }
 export async function DeleteCategory(req, res) {
   const { id } = req.body

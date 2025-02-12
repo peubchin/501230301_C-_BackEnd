@@ -1,0 +1,117 @@
+<div class="content">
+  <div class="container-fluid">
+    <h4 class="page-title">
+      <% if(mode==="Create" ){ %>
+        Tạo sản phẩm mới
+        <% }%>
+      <% if(mode==="Update" ){ %>
+        Cập nhật sản phẩm
+        <% }%>
+      <% if(mode==="Delete" ){ %>
+        Bạn có đồng ý xóa sản phẩm <%=product?.name%> ?
+        <% }%>
+    </h4>
+    <div class="card">
+      <div class="card-body">
+        <% if(mode==="Create" ){ %>
+          <form action="/products/create" method="post">
+          <% }%>
+         <% if(mode==="Update" ){ %>
+            <form action="/products/update/<%=product?._id%>" method="post">
+          <% }%>
+        <% if(mode==="Delete" ){ %>
+            <form action="/products/delete" method="post">
+              <% }%>
+          <div class="form-group <%=err?.code && 'has-error has-feedback'%>">
+              <label for="code"><strong>Mã sản phẩm</strong></label>
+              <input name="code" type="text" value="<%= product?.code %>" class="form-control productInput" id="code"
+               placeholder="Nhập mã sản phẩm"/>
+               <small class="form-text text-muted text-danger"><%=err.code%></small>
+            </div>
+
+          <div class="form-group <%=err?.name && 'has-error has-feedback'%>">
+            <label for="name"><strong>Tên sản phẩm</strong></label>
+            <input name="name" type="text" class="form-control productInput" id="name" value="<%= product?.name %>"
+              placeholder="Nhập tên sản phẩm"/>
+              <small class="form-text text-muted text-danger"><%=err.name%></small>
+              </div>
+
+          <div class="form-group <%=err?.searchString && 'has-error has-feedback'%>">
+            <label for="searchString"><strong>Chuỗi tìm kiếm</strong></label>
+            <input name="searchString" type="text" class="form-control productInput" id="searchString" value="<%= product?.searchString %>"
+              placeholder="Nhập chuỗi tìm kiếm"/>
+              <small class="form-text text-muted text-danger"><%=err.searchString%></small>
+              </div>
+          <div class="form-group <%=err?.price && 'has-error has-feedback'%>">
+            <label for="price"><strong>Giá sản phẩm</strong></label>
+            <input name="price" type="number" class="form-control productInput" id="price" value="<%= product?.price %>"
+              placeholder="Nhập giá sản phẩm"/>
+              <small class="form-text text-muted text-danger"><%=err.price%></small>
+              </div>
+
+          <div class="form-group <%=err?.images && 'has-error has-feedback'%>">
+            <label for="images"><strong>Link hình ảnh</strong></label>
+             <input name="images" type="text" class="form-control productInput" id="images"
+                value="<%=typeof product?.images ==='object' ? product?.images[0] : '' %>" placeholder="Nhập link hình ảnh" />
+               <small class="form-text text-muted text-danger"><%=err.images%></small>
+                </div>
+
+          <div class="form-group <%=err?.sizes && 'has-error has-feedback'%>">
+            <label for="sizes" class="d-block"><strong>Size</strong></label>
+            <% sizes.forEach(function (size, index) { %> 
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" value="<%=sizes%>" name="sizes">
+                <strong class="form-check-sign"><%=size%></strong>
+              </label>
+            <% }); %>
+               <small class="form-text text-muted text-danger"><%=err.size%></small>
+                </div>
+
+          <div class="form-group d-flex gap-2 <%=err?.color && 'has-error has-feedback'%>">
+            <label for="size" class=""><strong>Color</strong></label>
+            <% colors.forEach(function (color, index) { %> 
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" value="<%=color%>" name="colors">
+                <span class="form-check-sign ml-1"></span>
+                <span class="product-checkbox-label rounded-0 badge bg-<%=color%>"> </span>
+              </label>
+              <% }) %>
+               <small class="form-text text-muted text-danger"><%=err.color%></small>
+                </div>
+                <div class="form-group <%=err?.active && 'has-error has-feedback'%>">
+                  <label for="active"><strong>Active</strong></label>
+                  <input type="checkbox" checked data-toggle="toggle" data-onstyle="default" name="active">
+            </div>
+            <div class="form-group <%=err?.description && 'has-error has-feedback'%>">
+              <label for="description"><strong>Description</strong></label>
+            <textarea class="form-control" id="comment" rows="5" name="description"></textarea>
+            </div>
+            <div class="form-group <%=err?.information && 'has-error has-feedback'%>">
+              <label for="description"><strong>Information</strong></label>
+            <textarea class="form-control" id="comment" rows="5" name="information"></textarea>
+            </div>
+            <div class="form-group <%=err?.categoryId && 'has-error has-feedback'%>">
+              <label for="categoryId"><strong>Category</strong></label>
+              <select class="form-control form-control m-1 w-25" id="defaultSelect" name="categoryId">
+              <% categories.forEach(function (category, index) { %> 
+              <option value="<%= category._id %>"><%=category.name %></option>
+              <% }); %>
+              </select>
+            </div>
+          <div>
+            <div class="card-action">
+              <%if(mode=="Create"){%>
+                <button class="btn btn-success" type="submit">Tạo</button>
+                <%}else if(mode=="Update"){%>
+                  <button class="btn btn-success" type="submit">Cập nhật</button>
+                  <%}else{%>
+                 <button class="btn btn-success" type="submit">Xóa</button>
+                  <%}%>
+              <a href="/products" class="btn btn-primary">Trở về danh sách sản phẩm</a>
+                </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

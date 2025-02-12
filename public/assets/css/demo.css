@@ -108,3 +108,23 @@
 .white-space{
 	white-space: nowrap;
 }
+.product-checkbox-label{
+	width: 32px;
+	height: 8px;
+	border: solid 1px;
+}
+.bg-red{
+	background-color: red;
+}
+.bg-green{
+	background-color: green;
+}
+.bg-yellow{
+	background-color: yellow;
+}
+.bg-white{
+	background-color: white;
+}
+.bg-black{
+	background-color: #000;
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<%- include('../../layouts/head'); %>
+<body>
+	<div class="wrapper">
+		<!-- Main header -->
+		<%- include('../../layouts/main-header'); %>
+		<!-- sidebar -->
+		<%- include('../../layouts/sidebar'); %>
+			<div class="main-panel">
+				<!-- Content -->
+				<%- include('../../components/products/form'); %>
+				<%- include('../../layouts/footer'); %>
+
+			</div>
+	</div>
+	</div>
+	<!-- Modal -->
+	<%- include('../../components/common/modal'); %>
+</body>
+<%- include('../../layouts/script/main'); %>
+<%- include('../../layouts/script/component'); %>
+<script>
+	const mode='<%=mode%>'
+	if(mode==="Delete"){
+		$(".productInput").attr("disabled","disable");
+	}
+</script>
+</html>
