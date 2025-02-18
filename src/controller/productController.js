@@ -16,6 +16,7 @@ export async function listProduct(req, res) {
   const pageSize= !!req.query.pageSize ? parseInt(req.query.pageSize):5
   const page= !!req.query.page ? parseInt(req.query.page):1
   const skip=(page - 1)*pageSize
+
   const sort= !!req.query.sort ? req.query.sort: null
   let sortOrder={}
   if(sort){
@@ -25,7 +26,7 @@ export async function listProduct(req, res) {
     sortOrder={createAt:-1}
   }
   let filters={
-    deleteAt : null
+    deleteAt: null
   }
   if(search &&search.length > 0){
     filters.searchString={$regex:removeVietNamAccents(search),$options:"i"}//0 phan biet hoa thuong
@@ -33,7 +34,8 @@ export async function listProduct(req, res) {
 
   try {
     const countProducts = await productModel.countDocuments(filters)
-    const products = await productModel.find(filters).populate("category").sort(sortOrder).skip(skip).limit(pageSize);
+
+    const products = await productModel.find(filters).populate("category").sort(sortOrder).skip(skip).limit(pageSize);//
     res.render('pages/products/list',
       {
         title: "products",
@@ -80,7 +82,6 @@ export async function createProduct(req, res) {
     });
     res.redirect('/products')
   } catch (error) {
-    console.log("error",error);
     let err={}
     if(error==="code"){
       err.code="Ma san pham da ton tai"
@@ -90,7 +91,6 @@ export async function createProduct(req, res) {
         err[key]=error.errors[key].message
       })
     }
-    console.log("err ", err);
     res.render("pages/products/form", {
       title: "Create products",
       mode: "Create",
@@ -174,27 +174,29 @@ export async function RenderPageUpdateProduct(req, res) {
   const {id}=req.params;
   try {
     const product=await productModel.findOne({_id:id,deleteAt:null});
+    const categories=await categoryModel.find({deleteAt:null})
     if(product){
-      const categories=await categoryModel.find({deleteAt:null})
       res.render("pages/products/form", {
         title: "Update Products",
         mode: "Update",
         product,
-        sizes: sizes,
-        colors:colors,
-        categories: categories,
+        sizes,
+        colors,
+        categories,
         err:{}
       })
     }else{
       res.send("Hiện không có sản phẩm nào phù hợp!");
     }
   } catch (error) {
-    console.log(error);
     res.send("Trang web này không tồn tại");
+    console.log(error);
   }
 }
 export async function DeleteProduct(req, res) {
   const { id } = req.body
+  console.log(id);
+  
   try {
     await productModel.updateOne({
       _id: new ObjectId(id) },
@@ -211,13 +213,17 @@ export async function DeleteProduct(req, res) {
 export async function RenderPageDeleteProduct(req, res) {
   try {
     const {id}=req.params;
-  const product=await productModel.findOne({_id: new ObjectId(id),deleteAt:null});
+    const categories=await categoryModel.find({deleteAt:null})
+    const product=await productModel.findOne({_id: new ObjectId(id),deleteAt:null});
   if(product){
     
     res.render("pages/products/form", {
-      title: "Delete products",
+      title: "Delete Products",
       mode: "Delete",
-      product:product,
+      product,
+      sizes,
+      colors,
+      categories,
       err:{}
     })
   }else{

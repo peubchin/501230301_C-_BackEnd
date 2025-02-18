@@ -15,13 +15,15 @@
       <div class="card-body">
         <% if(mode==="Create" ){ %>
           <form action="/products/create" method="post">
-          <% }%>
-         <% if(mode==="Update" ){ %>
-            <form action="/products/update/<%=product?._id%>" method="post">
-          <% }%>
-        <% if(mode==="Delete" ){ %>
-            <form action="/products/delete" method="post">
-              <% }%>
+          <!-- Có phần form group hide -->
+        <% }else if(mode==="Update" ){ %>
+          <form action="/products/update/<%=product?._id%>" method="post">
+          <!-- Có phần form group hide -->
+        <% }else{ %>
+          <form action="/products/delete" method="post">
+          <!-- Có phần form group hide -->
+          <input type="text" name="id" value="<%=product?.id%>" class="d-none">
+          <%}%>
           <div class="form-group <%=err?.code && 'has-error has-feedback'%>">
               <label for="code"><strong>Mã sản phẩm</strong></label>
               <input name="code" type="text" value="<%= product?.code %>" class="form-control productInput" id="code"
@@ -55,46 +57,68 @@
                 value="<%=typeof product?.images ==='object' ? product?.images[0] : '' %>" placeholder="Nhập link hình ảnh" />
                <small class="form-text text-muted text-danger"><%=err.images%></small>
                 </div>
-
+                <!-- size -->
           <div class="form-group <%=err?.sizes && 'has-error has-feedback'%>">
             <label for="sizes" class="d-block"><strong>Size</strong></label>
             <% sizes.forEach(function (size, index) { %> 
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" value="<%=sizes%>" name="sizes">
+                <% if(product.sizes?.includes(size)){ %>
+                <input class="form-check-input" type="checkbox" value="<%=size%>" name="sizes" checked>
                 <strong class="form-check-sign"><%=size%></strong>
+                <%}else{ %>
+                  <input class="form-check-input" type="checkbox" value="<%=size%>" name="sizes">
+                  <strong class="form-check-sign"><%=size%></strong>
+                  <%}%>
               </label>
             <% }); %>
                <small class="form-text text-muted text-danger"><%=err.size%></small>
                 </div>
-
+                <!-- Color -->
           <div class="form-group d-flex gap-2 <%=err?.color && 'has-error has-feedback'%>">
             <label for="size" class=""><strong>Color</strong></label>
             <% colors.forEach(function (color, index) { %> 
-              <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" value="<%=color%>" name="colors">
-                <span class="form-check-sign ml-1"></span>
+      <!-- checked -->
+              <label class="form-check-label flex flex-col">
+               <% if(product.colors?.includes(color)){ %>
+                  <input class="form-check-input" type="checkbox" value="<%=color%>" name="colors" checked>
+                  <span class="form-check-sign ml-1">
+                  </span>
                 <span class="product-checkbox-label rounded-0 badge bg-<%=color%>"> </span>
-              </label>
-              <% }) %>
+                <%}else{ %>
+                    <input class="form-check-input" type="checkbox" value="<%=color%>" name="colors">
+                    <span class="form-check-sign ml-1">
+                    </span>
+                  <span class="product-checkbox-label rounded-0 badge bg-<%=color%>"> </span>
+                  <%}%>
+                </label>
+                <% }); %>
                <small class="form-text text-muted text-danger"><%=err.color%></small>
                 </div>
                 <div class="form-group <%=err?.active && 'has-error has-feedback'%>">
                   <label for="active"><strong>Active</strong></label>
-                  <input type="checkbox" checked data-toggle="toggle" data-onstyle="default" name="active">
+                  <%if(product?.active==="on"){%>
+                    <input type="checkbox" checked data-toggle="toggle" data-onstyle="default" name="active" rows="5">
+                    <%}else{%>
+                      <input type="checkbox" data-toggle="toggle" data-onstyle="default" name="active" rows="5">
+                    <%}%>
             </div>
             <div class="form-group <%=err?.description && 'has-error has-feedback'%>">
               <label for="description"><strong>Description</strong></label>
-            <textarea class="form-control" id="comment" rows="5" name="description"></textarea>
+            <textarea class="form-control" id="comment" rows="5" name="description" ><%=product?.description%></textarea>
             </div>
             <div class="form-group <%=err?.information && 'has-error has-feedback'%>">
               <label for="description"><strong>Information</strong></label>
-            <textarea class="form-control" id="comment" rows="5" name="information"></textarea>
+            <textarea class="form-control" id="comment" rows="5" name="information"><%=product?.information%></textarea>
             </div>
             <div class="form-group <%=err?.categoryId && 'has-error has-feedback'%>">
               <label for="categoryId"><strong>Category</strong></label>
               <select class="form-control form-control m-1 w-25" id="defaultSelect" name="categoryId">
               <% categories.forEach(function (category, index) { %> 
-              <option value="<%= category._id %>"><%=category.name %></option>
+                <% if(category._id.toString()=== product?.categoryId){%>
+              <option value="<%= category._id %>" selected><%=category.name %></option>
+              <%}else{%>
+                <option value="<%= category._id %>"><%=category.name %></option>
+                <%}%>
               <% }); %>
               </select>
             </div>

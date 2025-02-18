@@ -51,7 +51,8 @@ const productSchema = new Schema({
     },
     required:[true,"Bat buoc phai nhap hinh anh"]
   },
-  categoryId: { type: Schema.Types.ObjectId, ref: 'categories' }, 
+  categoryId: { type: Schema.Types.ObjectId, ref: 'categories' }, //
+  deleteAt: Date,
 }, {
   versionKey: false,
   collection: 'products',
@@ -65,5 +66,12 @@ productSchema.virtual("category",{
   foreignField: "_id",
   justOne: true
 })
+productSchema.virtual('categoryIdString').get(function(){
+  return !!this.categoryId ? this.categoryId.toString():"";
+})
+// // Tính thời gian tạo, category được tạo bao lâu
+// productSchema.virtual('create').get(function(){
+//   return new Date().getTime()- new Date(this.createAt).getTime();
+// })
 const productModel = mongoose.model('product', productSchema);
 export default productModel;

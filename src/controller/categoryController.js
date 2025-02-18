@@ -10,17 +10,19 @@ const sortObjects=[
 ]
 
 export async function listCategory(req, res) {
-  const search=req.query?.search
+  const search=req.query?.search //tìm kiếm
+  //phân trang
   const pageSize= !!req.query.pageSize ? parseInt(req.query.pageSize):5
   const page= !!req.query.page ? parseInt(req.query.page):1
   const skip=(page - 1)*pageSize
+  //sort
   const sort= !!req.query.sort ? req.query.sort: null
   let sortOrder={}
   if(sort){
-    const [col,ord]=sort.split('_');
+    const [col,ord]=sort.split('_');//tách code thành 2, dòng, yêu cầu
     sortOrder[col]=ord
   }else{
-    sortOrder={createAt:-1}
+    sortOrder={createAt:-1}//sắp xếp mặc định mới nhất.
   }
   let filters={
     deleteAt : null

@@ -25,8 +25,13 @@ const categorySchema= new Schema({
   deleteAt:Date
 },{
   versionKey:false,
-  collection:'categories'
+  collection:'categories',
+  toJSON:{virtuals:true},
+  toObject:{virtuals:true}
 });
+categorySchema.virtual('categoryIdString').get(function(){
+  return this._id.toString();
+})
 
 const categoryModel=mongoose.model('category',categorySchema);
 export default categoryModel;

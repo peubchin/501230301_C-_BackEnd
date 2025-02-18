@@ -62,9 +62,13 @@
               </td>
               <td><%=product.price%></td>
               <td>
-            <% product.colors.forEach((color, index) => { %>
-              <span class="badge rounded-0" style="background-color:<%=color%> "> </span>
-              <%})%>
+                
+                <div class="form-group d-flex gap-2">
+                  <label for="size" class=""><strong>Color</strong></label>
+                  <% product.colors.forEach(function (color, index) { %> 
+                      <span class=" ml-1 product-checkbox-label rounded-0 badge bg-<%=color%>"> </span>
+                    <% }) %>
+                      </div>
               </td>
               <td><%=product.category?.name%></td>
               <td>
